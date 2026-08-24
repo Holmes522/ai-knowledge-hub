@@ -32,7 +32,10 @@ function App() {
   const selected = useMemo(() => notes.find((note) => note.id === selectedId) ?? null, [notes, selectedId])
 
   useEffect(() => {
-    api.me().then(setUser).catch(() => undefined).finally(() => setAuthChecked(true))
+    api.me().then((candidate) => {
+      if (isValidUser(candidate)) setUser(candidate)
+      else api.logout()
+    }).catch(() => undefined).finally(() => setAuthChecked(true))
   }, [])
 
   useEffect(() => {
@@ -64,6 +67,7 @@ function App() {
       const nextUser = authMode === 'login'
         ? await api.login(authForm.username, authForm.password)
         : await api.register(authForm.username, authForm.email, authForm.password)
+      if (!isValidUser(nextUser)) throw new Error('Invalid user response')
       setUser(nextUser)
     } catch (error) {
       setAuthError('登录信息无效，请检查后重试。')
@@ -136,6 +140,12 @@ function App() {
 
 function AuthScreen({ mode, form, error, onModeChange, onChange, onSubmit }: { mode: 'login' | 'register'; form: { username: string; email: string; password: string }; error: string; onModeChange: (mode: 'login' | 'register') => void; onChange: (form: { username: string; email: string; password: string }) => void; onSubmit: (event: FormEvent) => void }) {
   return <div className="auth-shell"><div className="auth-art"><div className="orb orb-one" /><div className="orb orb-two" /><span className="brand-mark large"><Sparkles size={21} /></span><p className="art-quote">“The palest ink is better than the best memory.”</p><span className="art-caption">— 学习者的第二大脑</span></div><form className="auth-card" onSubmit={onSubmit}><p className="eyebrow">YOUR LEARNING SPACE</p><h1>欢迎回来。</h1><p className="auth-intro">把零散的输入，整理成可回看的知识。</p><div className="auth-tabs"><button type="button" className={mode === 'login' ? 'active' : ''} onClick={() => onModeChange('login')}>登录</button><button type="button" className={mode === 'register' ? 'active' : ''} onClick={() => onModeChange('register')}>注册</button></div><label>用户名<input required value={form.username} onChange={(event) => onChange({ ...form, username: event.target.value })} /></label>{mode === 'register' && <label>邮箱<input required type="email" value={form.email} onChange={(event) => onChange({ ...form, email: event.target.value })} /></label>}<label>密码<input required type="password" minLength={8} value={form.password} onChange={(event) => onChange({ ...form, password: event.target.value })} /></label>{error && <p className="form-error">{error}</p>}<button className="auth-submit">{mode === 'login' ? '进入知识空间' : '创建我的空间'} <ChevronRight size={17} /></button></form></div>
+}
+
+function isValidUser(value: unknown): value is User {
+  if (!value || typeof value !== 'object') return false
+  const candidate = value as Partial<User>
+  return typeof candidate.username === 'string' && candidate.username.trim().length > 0 && typeof candidate.role === 'string'
 }
 
 export default App
