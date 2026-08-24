@@ -23,6 +23,12 @@ class NoteStatus(str, Enum):
     REVIEWING = "reviewing"
 
 
+class CommentStatus(str, Enum):
+    PENDING = "pending"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+
+
 class TagType(str, Enum):
     FORMAT = "format"
     CATEGORY = "category"
@@ -90,3 +96,26 @@ class NoteFile(Base):
     file_size: Mapped[int] = mapped_column(Integer)
     created_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
     note: Mapped[Note] = relationship(back_populates="files")
+
+
+class Comment(Base):
+    __tablename__ = "comment"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    note_id: Mapped[int] = mapped_column(ForeignKey("note.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("user.id", ondelete="SET NULL"), nullable=True)
+    nickname: Mapped[str] = mapped_column(String(80))
+    email: Mapped[str] = mapped_column(String(255))
+    content: Mapped[str] = mapped_column(String(2000))
+    status: Mapped[CommentStatus] = mapped_column(SqlEnum(CommentStatus), default=CommentStatus.PENDING, index=True)
+    created_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
+class Favorite(Base):
+    __tablename__ = "favorite"
+    __table_args__ = (UniqueConstraint("user_id", "note_id", name="uq_favorite_user_note"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), index=True)
+    note_id: Mapped[int] = mapped_column(ForeignKey("note.id", ondelete="CASCADE"), index=True)
+    created_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)

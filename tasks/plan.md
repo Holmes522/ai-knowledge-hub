@@ -39,8 +39,8 @@
 
 ### Phase 3: Community and Admin
 
-- [ ] Task 3.1: 评论、审核和防垃圾基础策略
-- [ ] Task 3.2: 收藏和管理员后台
+- [x] Task 3.1: 评论、审核和防垃圾基础策略
+- [x] Task 3.2: 收藏和管理员后台 API
 
 ### Phase 4: AI/RAG
 

@@ -47,6 +47,7 @@ class NoteUpdate(BaseModel):
     content: str | None = None
     status: Literal["unlearned", "learning", "completed", "reviewing"] | None = None
     tags: list[str] | None = Field(default=None, max_length=20)
+    is_public: bool | None = None
 
 
 class NoteRead(BaseModel):
@@ -79,3 +80,33 @@ class FileRead(BaseModel):
     file_url: str
     file_size: int
     created_time: datetime
+
+
+class PublicCommentCreate(BaseModel):
+    nickname: str = Field(min_length=1, max_length=80)
+    email: EmailStr
+    content: str = Field(min_length=1, max_length=2000)
+
+
+class CommentRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    note_id: int
+    user_id: int | None
+    nickname: str
+    email: EmailStr
+    content: str
+    status: str
+    created_time: datetime
+
+
+class CommentModerate(BaseModel):
+    status: Literal["approved", "rejected"]
+
+
+class AdminStats(BaseModel):
+    notes: int
+    users: int
+    comments: int
+    views: int

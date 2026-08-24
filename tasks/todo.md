@@ -18,10 +18,15 @@
 - [x] Task 2.2 上传 API 和附件 UI
 - [x] Task 2.3 笔记附件管理
 
+## Phase 3
+
+- [x] Task 3.1 评论、审核和防垃圾基础策略
+- [x] Task 3.2 收藏和管理员后台 API
+
 ## Checkpoints
 
 - [x] Phase 1 验收、提交并推送
 - [x] Phase 2 验收、提交并推送
-- [ ] Phase 3 验收、提交并推送
+- [x] Phase 3 验收、提交并推送
 - [ ] Phase 4 验收、提交并推送
 - [ ] Phase 5 验收、提交并推送

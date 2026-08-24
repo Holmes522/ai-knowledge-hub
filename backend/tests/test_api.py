@@ -5,8 +5,10 @@ os.environ["JWT_SECRET_KEY"] = "test-secret-key"
 
 from fastapi.testclient import TestClient
 
-from app.db import Base, engine
+from app.db import Base, SessionLocal, engine
 from app.main import app
+from app.models import User, UserRole
+from sqlalchemy import select
 
 
 client = TestClient(app)
@@ -127,3 +129,51 @@ def test_upload_rejects_disallowed_file_extensions():
         files={"file": ("payload.exe", b"not allowed", "application/octet-stream")},
     )
     assert response.status_code == 415
+
+
+def promote_current_user_to_admin(username: str) -> None:
+    db = SessionLocal()
+    user = db.scalar(select(User).where(User.username == username))
+    assert user is not None
+    user.role = UserRole.ADMIN
+    db.commit()
+    db.close()
+
+
+def test_public_note_comments_require_moderation_and_admin_can_approve():
+    owner_headers = register_and_login()
+    created = client.post("/api/notes", headers=owner_headers, json={"title": "Public RAG", "content": "RAG notes"})
+    note_id = created.json()["id"]
+    published = client.patch(f"/api/notes/{note_id}", headers=owner_headers, json={"is_public": True})
+    assert published.status_code == 200
+
+    public_note = client.get(f"/api/public/notes/{note_id}")
+    assert public_note.status_code == 200
+    assert public_note.json()["views"] == 1
+
+    comment = client.post(
+        f"/api/public/notes/{note_id}/comments",
+        json={"nickname": "Guest", "email": "guest@example.com", "content": "很有帮助"},
+    )
+    assert comment.status_code == 201
+    assert comment.json()["status"] == "pending"
+
+    client.post("/api/auth/register", json={"username": "admin", "email": "admin@example.com", "password": "password123"})
+    login = client.post("/api/auth/login", data={"username": "admin", "password": "password123"})
+    admin_headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
+    promote_current_user_to_admin("admin")
+    moderated = client.patch(f"/api/admin/comments/{comment.json()['id']}", headers=admin_headers, json={"status": "approved"})
+    assert moderated.status_code == 200
+    assert moderated.json()["status"] == "approved"
+
+
+def test_user_can_toggle_favorite_and_non_admin_cannot_moderate():
+    headers = register_and_login()
+    created = client.post("/api/notes", headers=headers, json={"title": "Favorite"})
+    note_id = created.json()["id"]
+    favorited = client.post(f"/api/notes/{note_id}/favorite", headers=headers)
+    assert favorited.status_code == 201
+    assert client.get("/api/favorites", headers=headers).json()[0]["id"] == note_id
+    assert client.delete(f"/api/notes/{note_id}/favorite", headers=headers).status_code == 204
+    assert client.get("/api/favorites", headers=headers).json() == []
+    assert client.patch("/api/admin/comments/1", headers=headers, json={"status": "approved"}).status_code == 403

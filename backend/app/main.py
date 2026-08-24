@@ -7,6 +7,8 @@ from fastapi.staticfiles import StaticFiles
 from .config import get_settings
 from .db import init_db
 from .routes_auth import router as auth_router
+from .routes_admin import router as admin_router
+from .routes_community import router as community_router
 from .routes_notes import router as notes_router
 from .storage import storage_root
 
@@ -36,3 +38,5 @@ def health() -> dict[str, str]:
 
 app.include_router(auth_router)
 app.include_router(notes_router)
+app.include_router(community_router)
+app.include_router(admin_router)
