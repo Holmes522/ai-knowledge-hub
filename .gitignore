@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.db
+*.tsbuildinfo
+
+# JavaScript
+node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/vite.config.js
+frontend/vite.config.d.ts
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
