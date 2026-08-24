@@ -14,7 +14,7 @@
 
 ## Checkpoints
 
-- [ ] Phase 1 验收、提交并推送
+- [x] Phase 1 验收、提交并推送
 - [ ] Phase 2 验收、提交并推送
 - [ ] Phase 3 验收、提交并推送
 - [ ] Phase 4 验收、提交并推送
