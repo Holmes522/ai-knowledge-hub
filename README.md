@@ -9,6 +9,7 @@ AI Knowledge Hub 是一个基于 React + FastAPI 的个人学习知识库系统�
 - Phase 2：本地安全文件存储、附件上传/列出/删除、前端附件管理
 - Phase 3：公开笔记、游客评论审核、敏感词拦截、收藏和管理员统计/审核 API
 - Phase 4：本地确定性 Embedding、按用户隔离的索引/检索、带来源的 RAG 问答和 AI 助手 UI
+- Phase 5：Docker Compose、Nginx、PostgreSQL/Redis/MinIO 基础设施、CI 和部署文档
 
 ## 本地运行
 

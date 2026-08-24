@@ -50,9 +50,9 @@
 
 ### Phase 5: Delivery
 
-- [ ] Task 5.1: Docker Compose、Nginx 和环境文档
-- [ ] Task 5.2: GitHub Actions CI/CD
-- [ ] Task 5.3: 发布检查清单和部署说明
+- [x] Task 5.1: Docker Compose、Nginx 和环境文档
+- [x] Task 5.2: GitHub Actions CI/CD
+- [x] Task 5.3: 发布检查清单和部署说明
 
 ## Risks and Mitigations
 

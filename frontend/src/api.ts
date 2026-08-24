@@ -1,7 +1,7 @@
 import axios from 'axios'
 import type { FileAttachment, Note, NoteInput, NoteStatus, User } from './types'
 
-const api = axios.create({ baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:8000' })
+const api = axios.create({ baseURL: import.meta.env.VITE_API_URL ?? '' })
 
 api.interceptors.request.use((config) => {
   const token = sessionStorage.getItem('knowledge_hub_token')

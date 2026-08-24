@@ -29,10 +29,16 @@
 - [x] Task 4.2 向量检索/RAG 服务和本地降级实现
 - [x] Task 4.3 AI 助手 UI 与引用来源
 
+## Phase 5
+
+- [x] Task 5.1 Docker Compose、Nginx 和环境文档
+- [x] Task 5.2 GitHub Actions CI/CD
+- [x] Task 5.3 发布检查清单和部署说明
+
 ## Checkpoints
 
 - [x] Phase 1 验收、提交并推送
 - [x] Phase 2 验收、提交并推送
 - [x] Phase 3 验收、提交并推送
 - [x] Phase 4 验收、提交并推送
-- [ ] Phase 5 验收、提交并推送
+- [x] Phase 5 验收、提交并推送

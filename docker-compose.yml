@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: knowledge_hub
+      POSTGRES_USER: knowledge_hub
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-knowledge_hub_dev}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U knowledge_hub -d knowledge_hub"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-knowledge_hub}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-knowledge_hub_dev}
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9001:9001"
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://knowledge_hub:${POSTGRES_PASSWORD:-knowledge_hub_dev}@db:5432/knowledge_hub
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Set JWT_SECRET_KEY before production use}
+      FRONTEND_URL: http://localhost
+      STORAGE_DIR: /app/storage
+    volumes:
+      - backend_storage:/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  minio_data:
+  backend_storage:
