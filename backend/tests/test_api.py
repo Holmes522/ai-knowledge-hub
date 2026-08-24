@@ -92,3 +92,38 @@ def test_user_cannot_read_another_users_private_note():
     other_headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
     response = client.get(f"/api/notes/{created.json()['id']}", headers=other_headers)
     assert response.status_code == 404
+
+
+def test_user_can_upload_and_delete_an_allowed_attachment():
+    headers = register_and_login()
+    created = client.post("/api/notes", headers=headers, json={"title": "Attachments", "content": "notes"})
+    note_id = created.json()["id"]
+
+    uploaded = client.post(
+        f"/api/notes/{note_id}/files",
+        headers=headers,
+        files={"file": ("diagram.png", b"fake-png-content", "image/png")},
+    )
+    assert uploaded.status_code == 201
+    attachment = uploaded.json()
+    assert attachment["filename"] == "diagram.png"
+    assert attachment["file_size"] == len(b"fake-png-content")
+
+    listed = client.get(f"/api/notes/{note_id}/files", headers=headers)
+    assert listed.status_code == 200
+    assert len(listed.json()) == 1
+
+    deleted = client.delete(f"/api/notes/{note_id}/files/{attachment['id']}", headers=headers)
+    assert deleted.status_code == 204
+    assert client.get(f"/api/notes/{note_id}/files", headers=headers).json() == []
+
+
+def test_upload_rejects_disallowed_file_extensions():
+    headers = register_and_login()
+    created = client.post("/api/notes", headers=headers, json={"title": "Attachments"})
+    response = client.post(
+        f"/api/notes/{created.json()['id']}/files",
+        headers=headers,
+        files={"file": ("payload.exe", b"not allowed", "application/octet-stream")},
+    )
+    assert response.status_code == 415

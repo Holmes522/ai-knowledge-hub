@@ -11,6 +11,16 @@ export type Tag = {
   type: string
 }
 
+export type FileAttachment = {
+  id: number
+  note_id: number
+  filename: string
+  file_type: string
+  file_url: string
+  file_size: number
+  created_time: string
+}
+
 export type NoteStatus = 'unlearned' | 'learning' | 'completed' | 'reviewing'
 
 export type Note = {

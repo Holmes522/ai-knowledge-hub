@@ -65,6 +65,7 @@ class Note(Base):
     updated_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, onupdate=utc_now)
     owner: Mapped[User] = relationship(back_populates="notes")
     tags: Mapped[list["Tag"]] = relationship(secondary=note_tags, back_populates="notes")
+    files: Mapped[list["NoteFile"]] = relationship(back_populates="note", cascade="all, delete-orphan")
 
 
 class Tag(Base):
@@ -76,3 +77,16 @@ class Tag(Base):
     type: Mapped[TagType] = mapped_column(SqlEnum(TagType), default=TagType.CUSTOM)
     created_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
     notes: Mapped[list[Note]] = relationship(secondary=note_tags, back_populates="tags")
+
+
+class NoteFile(Base):
+    __tablename__ = "file"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    note_id: Mapped[int] = mapped_column(ForeignKey("note.id", ondelete="CASCADE"), index=True)
+    filename: Mapped[str] = mapped_column(String(255))
+    file_type: Mapped[str] = mapped_column(String(100))
+    file_url: Mapped[str] = mapped_column(String(500), unique=True)
+    file_size: Mapped[int] = mapped_column(Integer)
+    created_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    note: Mapped[Note] = relationship(back_populates="files")

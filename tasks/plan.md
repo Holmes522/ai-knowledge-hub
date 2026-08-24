@@ -33,9 +33,9 @@
 
 ### Phase 2: Media
 
-- [ ] Task 2.1: 文件模型、类型/大小校验和本地存储适配器
-- [ ] Task 2.2: MinIO/S3 适配和上传 UI
-- [ ] Task 2.3: 笔记附件管理
+- [x] Task 2.1: 文件模型、类型/大小校验和本地存储适配器
+- [x] Task 2.2: 上传 API 和上传 UI（MinIO/S3 生产适配留到 delivery）
+- [x] Task 2.3: 笔记附件管理
 
 ### Phase 3: Community and Admin
 

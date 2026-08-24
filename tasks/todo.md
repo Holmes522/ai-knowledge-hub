@@ -12,10 +12,16 @@
 - [x] Task 1.3 标签和搜索
 - [x] Task 1.4 React 工作台
 
+## Phase 2
+
+- [x] Task 2.1 文件模型、类型/大小校验和本地存储适配器
+- [x] Task 2.2 上传 API 和附件 UI
+- [x] Task 2.3 笔记附件管理
+
 ## Checkpoints
 
 - [x] Phase 1 验收、提交并推送
-- [ ] Phase 2 验收、提交并推送
+- [x] Phase 2 验收、提交并推送
 - [ ] Phase 3 验收、提交并推送
 - [ ] Phase 4 验收、提交并推送
 - [ ] Phase 5 验收、提交并推送

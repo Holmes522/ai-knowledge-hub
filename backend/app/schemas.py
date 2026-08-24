@@ -67,3 +67,15 @@ class NoteRead(BaseModel):
 class NoteList(BaseModel):
     items: list[NoteRead]
     total: int
+
+
+class FileRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    note_id: int
+    filename: str
+    file_type: str
+    file_url: str
+    file_size: int
+    created_time: datetime

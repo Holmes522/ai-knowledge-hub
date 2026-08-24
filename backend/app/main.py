@@ -2,11 +2,13 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from .config import get_settings
 from .db import init_db
 from .routes_auth import router as auth_router
 from .routes_notes import router as notes_router
+from .storage import storage_root
 
 
 @asynccontextmanager
@@ -17,6 +19,7 @@ async def lifespan(_: FastAPI):
 
 settings = get_settings()
 app = FastAPI(title=settings.app_name, version="1.0.0", lifespan=lifespan)
+app.mount("/uploads", StaticFiles(directory=str(storage_root())), name="uploads")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.frontend_url],

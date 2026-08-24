@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { Note, NoteInput, NoteStatus, User } from './types'
+import type { FileAttachment, Note, NoteInput, NoteStatus, User } from './types'
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:8000' })
 
@@ -43,6 +43,22 @@ export async function updateNote(id: number, input: Partial<NoteInput> & { statu
 
 export async function deleteNote(id: number) {
   await api.delete(`/api/notes/${id}`)
+}
+
+export async function listFiles(noteId: number) {
+  const { data } = await api.get<FileAttachment[]>(`/api/notes/${noteId}/files`)
+  return data
+}
+
+export async function uploadFile(noteId: number, file: File) {
+  const body = new FormData()
+  body.append('file', file)
+  const { data } = await api.post<FileAttachment>(`/api/notes/${noteId}/files`, body)
+  return data
+}
+
+export async function deleteFile(noteId: number, fileId: number) {
+  await api.delete(`/api/notes/${noteId}/files/${fileId}`)
 }
 
 export function logout() {
