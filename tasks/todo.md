@@ -23,10 +23,16 @@
 - [x] Task 3.1 评论、审核和防垃圾基础策略
 - [x] Task 3.2 收藏和管理员后台 API
 
+## Phase 4
+
+- [x] Task 4.1 文本切分、Embedding provider 和索引任务边界
+- [x] Task 4.2 向量检索/RAG 服务和本地降级实现
+- [x] Task 4.3 AI 助手 UI 与引用来源
+
 ## Checkpoints
 
 - [x] Phase 1 验收、提交并推送
 - [x] Phase 2 验收、提交并推送
 - [x] Phase 3 验收、提交并推送
-- [ ] Phase 4 验收、提交并推送
+- [x] Phase 4 验收、提交并推送
 - [ ] Phase 5 验收、提交并推送

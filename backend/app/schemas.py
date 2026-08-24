@@ -110,3 +110,24 @@ class AdminStats(BaseModel):
     users: int
     comments: int
     views: int
+
+
+class IndexResult(BaseModel):
+    note_id: int
+    chunks: int
+
+
+class AIQuestion(BaseModel):
+    question: str = Field(min_length=2, max_length=1000)
+
+
+class AISource(BaseModel):
+    note_id: int
+    title: str
+    excerpt: str
+    score: float
+
+
+class AIAnswer(BaseModel):
+    answer: str
+    sources: list[AISource]

@@ -177,3 +177,30 @@ def test_user_can_toggle_favorite_and_non_admin_cannot_moderate():
     assert client.delete(f"/api/notes/{note_id}/favorite", headers=headers).status_code == 204
     assert client.get("/api/favorites", headers=headers).json() == []
     assert client.patch("/api/admin/comments/1", headers=headers, json={"status": "approved"}).status_code == 403
+
+
+def test_ai_indexes_notes_and_returns_user_scoped_sources():
+    headers = register_and_login()
+    created = client.post(
+        "/api/notes",
+        headers=headers,
+        json={"title": "RAG 实践", "content": "Embedding 将文本转换为向量，Retriever 负责召回相关片段。"},
+    )
+    note_id = created.json()["id"]
+    indexed = client.post(f"/api/ai/notes/{note_id}/index", headers=headers)
+    assert indexed.status_code == 200
+    assert indexed.json()["chunks"] >= 1
+
+    answer = client.post("/api/ai/ask", headers=headers, json={"question": "Embedding 如何工作？"})
+    assert answer.status_code == 200
+    assert answer.json()["sources"][0]["note_id"] == note_id
+    assert "RAG 实践" in answer.json()["answer"]
+
+
+def test_ai_index_cannot_access_another_users_note():
+    owner_headers = register_and_login()
+    created = client.post("/api/notes", headers=owner_headers, json={"title": "Private AI", "content": "private"})
+    client.post("/api/auth/register", json={"username": "other", "email": "other@example.com", "password": "password123"})
+    login = client.post("/api/auth/login", data={"username": "other", "password": "password123"})
+    other_headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
+    assert client.post(f"/api/ai/notes/{created.json()['id']}/index", headers=other_headers).status_code == 404

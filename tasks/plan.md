@@ -44,9 +44,9 @@
 
 ### Phase 4: AI/RAG
 
-- [ ] Task 4.1: 文本切分、Embedding provider 和索引任务边界
-- [ ] Task 4.2: 向量检索/RAG 服务和本地降级实现
-- [ ] Task 4.3: AI 助手 UI 与引用来源
+- [x] Task 4.1: 文本切分、Embedding provider 和索引任务边界
+- [x] Task 4.2: 向量检索/RAG 服务和本地降级实现
+- [x] Task 4.3: AI 助手 UI 与引用来源
 
 ### Phase 5: Delivery
 

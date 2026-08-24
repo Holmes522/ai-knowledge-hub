@@ -61,6 +61,16 @@ export async function deleteFile(noteId: number, fileId: number) {
   await api.delete(`/api/notes/${noteId}/files/${fileId}`)
 }
 
+export async function indexNote(noteId: number) {
+  const { data } = await api.post<{ note_id: number; chunks: number }>(`/api/ai/notes/${noteId}/index`)
+  return data
+}
+
+export async function askAI(question: string) {
+  const { data } = await api.post<{ answer: string; sources: { note_id: number; title: string; excerpt: string; score: number }[] }>('/api/ai/ask', { question })
+  return data
+}
+
 export function logout() {
   sessionStorage.removeItem('knowledge_hub_token')
 }

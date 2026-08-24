@@ -119,3 +119,16 @@ class Favorite(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), index=True)
     note_id: Mapped[int] = mapped_column(ForeignKey("note.id", ondelete="CASCADE"), index=True)
     created_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
+class NoteEmbedding(Base):
+    __tablename__ = "note_embedding"
+    __table_args__ = (UniqueConstraint("note_id", "chunk_index", name="uq_note_embedding_chunk"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), index=True)
+    note_id: Mapped[int] = mapped_column(ForeignKey("note.id", ondelete="CASCADE"), index=True)
+    chunk_index: Mapped[int] = mapped_column(Integer)
+    content: Mapped[str] = mapped_column(Text)
+    vector_json: Mapped[str] = mapped_column(Text)
+    created_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)

@@ -8,6 +8,7 @@ from .config import get_settings
 from .db import init_db
 from .routes_auth import router as auth_router
 from .routes_admin import router as admin_router
+from .routes_ai import router as ai_router
 from .routes_community import router as community_router
 from .routes_notes import router as notes_router
 from .storage import storage_root
@@ -40,3 +41,4 @@ app.include_router(auth_router)
 app.include_router(notes_router)
 app.include_router(community_router)
 app.include_router(admin_router)
+app.include_router(ai_router)
